@@ -6,7 +6,6 @@ import (
 	_ "github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
 	"github.com/xormplus/xorm"
-
 	"time"
 )
 
@@ -91,17 +90,13 @@ func DB_Init() {
 	defer engine.Close()
 	defer AUTH_SAL.AuthEng.Close()
 
-	//=====================================================================
 	//en func
 	engine.ShowSQL(true)
 	//	engine.Logger().SetLevel(core.LOG_DEBUG)
 	engine.ShowExecTime(true)
-
 	//	AUTH_SAL.AuthEng.Logger().SetLevel(core.LOG_DEBUG)
-
 	AUTH_SAL.AuthEng.ShowSQL(true)
 
-	//=====================================================================
 	//check table
 	err = engine.CreateTables(new(Pd_index))
 	if err != nil {
@@ -120,7 +115,6 @@ func DB_Init() {
 		panic(err)
 	}
 
-	//=====================================================================
 	//hold on
 	<-DB_EXIT
 }

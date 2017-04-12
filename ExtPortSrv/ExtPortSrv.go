@@ -9,13 +9,15 @@ import (
 	"time"
 )
 
-func main() {
+func ExternService() {
 	fmt.Println("\n\n\n[INFO]start server....", time.Now().Format(time.UnixDate))
-	Server()
+	TcpServer()
 }
 
 //Client Device Server,provide robot connect service
-func Server() {
+func TcpServer() {
+
+	//pprof service
 	go func() {
 		logrus.Println(http.ListenAndServe("localhost:6060", nil))
 	}()
@@ -44,6 +46,6 @@ func Server() {
 
 	for {
 		conn := <-conn_chan
-		go EchoFunc(conn)
+		go TcpFrameProcessor(conn)
 	}
 }

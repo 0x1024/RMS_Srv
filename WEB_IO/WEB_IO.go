@@ -21,6 +21,10 @@ type cmd struct {
 
 var WEBIO_EXIT chan int
 
+func Init() {
+	Public.LoginUser = make(map[*websocket.Conn]*Public.LoginType)
+}
+
 func Http_init() {
 
 	http.Handle("/", websocket.Handler(echoHandler))

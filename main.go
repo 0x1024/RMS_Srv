@@ -2,19 +2,20 @@ package main
 
 import (
 	"RMS_Srv/DataBase_SAL"
-	"RMS_Srv/Public"
+	"RMS_Srv/ExtPortSrv"
 	"RMS_Srv/WEB_IO"
-	"golang.org/x/net/websocket"
 )
 
 var RMS_EXIT chan int
 
 func main() {
-	Public.LoginUser = make(map[*websocket.Conn]*Public.LoginType)
+	WEB_IO.Init()
 
 	go DataBase_SAL.DB_Init()
 
 	go WEB_IO.Http_init()
+
+	go ExtPortSrv.ExternService()
 
 	<-RMS_EXIT
 }
