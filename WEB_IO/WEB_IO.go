@@ -74,6 +74,7 @@ func HB(ws *websocket.Conn) {
 			Senders.Ws = ws
 			Senders.Dat = data_tmp
 			Public.LoginUser[ws].HBLife = Public.LoginUser[ws].HBLife + 1
+			fmt.Println("HBL", Public.LoginUser[ws].HBLife)
 			if Public.LoginUser[ws].HBLife > 10 {
 				ws.Close()
 			}
@@ -98,7 +99,6 @@ func echoHandler(ws *websocket.Conn) {
 			//os.Stdout.Write(buf[:n])
 		}
 	}()
-	err = ws.SetDeadline(time.Now().Add(30e9))
 
 	defer ws.Close()
 	go sender()
@@ -114,12 +114,11 @@ func echoHandler(ws *websocket.Conn) {
 		go GenPPL(ws)
 
 	}
-	//fmt.Println("users ：", Public.LoginUser)
 
 	msg := make([]byte, 1024)
 	for true {
-		//		err = ws.SetReadDeadline(time.Now().Add(time.Second * 30))
-		//		if err!= nil{fmt.Println("set read dead time",err)}
+
+		err = ws.SetDeadline(time.Now().Add(30e9))
 		n, err = ws.Read(msg)
 		//		err = ws.SetReadDeadline(time.Unix(0,0))
 		if err != nil {
@@ -135,7 +134,7 @@ func echoHandler(ws *websocket.Conn) {
 			}
 		}
 
-		fmt.Printf("Receive: %s\n", msg[:n])
+		fmt.Printf("Receive:[%s] %s\n", time.Now().Format(time.UnixDate), msg[:n])
 		DataBase_SAL.ReqProcess(ws, string(msg[:n]))
 
 	}
