@@ -1,7 +1,6 @@
 package Protocol
 
 import (
-	pt "RMS_Srv/Prot_table"
 	"encoding/binary"
 	"math"
 	"unsafe"
@@ -24,7 +23,7 @@ func serialGen() uint16 {
 func Dopack(loads []byte, cmd uint16, para uint32) ([]byte, error) {
 	var err error = nil
 	var pk []byte
-	var ptag pt.PackTag
+	var ptag PackTag
 
 	ptag.Phead = 0xAA55
 	ptag.Plen = uint16(len(loads))
@@ -48,8 +47,8 @@ func Dopack(loads []byte, cmd uint16, para uint32) ([]byte, error) {
 	return pk, err
 }
 
-func Depack(d []byte) (pt.PackTag, []byte) {
-	var ptag pt.PackTag
+func Depack(d []byte) (PackTag, []byte) {
+	var ptag PackTag
 	l := unsafe.Sizeof(ptag)
 	pb := (*[1024]byte)(unsafe.Pointer(&ptag))
 	copy((*pb)[:l], d[:l])

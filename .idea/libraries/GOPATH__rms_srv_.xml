@@ -26,6 +26,7 @@
       <root url="file://$PROJECT_DIR$/../RMS_Prot" />
       <root url="file://$PROJECT_DIR$/../go-home" />
       <root url="file://$PROJECT_DIR$/../gocrc16" />
+      <root url="file://$PROJECT_DIR$/../RMS_Node" />
       <root url="file://$PROJECT_DIR$/../overflow" />
       <root url="file://$PROJECT_DIR$/../PackFrame" />
     </CLASSES>
@@ -55,6 +56,7 @@
       <root url="file://$PROJECT_DIR$/../RMS_Prot" />
       <root url="file://$PROJECT_DIR$/../go-home" />
       <root url="file://$PROJECT_DIR$/../gocrc16" />
+      <root url="file://$PROJECT_DIR$/../RMS_Node" />
       <root url="file://$PROJECT_DIR$/../overflow" />
       <root url="file://$PROJECT_DIR$/../PackFrame" />
     </SOURCES>

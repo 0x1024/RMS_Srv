@@ -1,7 +1,7 @@
 package FileSrv
 
 import (
-	ptb "RMS_Srv/Prot_table"
+	ptb "RMS_Srv/Protocol"
 	"bytes"
 	"encoding/binary"
 	"fmt"
