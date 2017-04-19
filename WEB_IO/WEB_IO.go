@@ -126,11 +126,16 @@ func echoHandler(ws *websocket.Conn) {
 			switch {
 			case err == io.EOF:
 				delete(Public.LoginUser, ws)
-				fmt.Println("\n\n\nusers %q：\n\n\n", Public.LoginUser)
+				fmt.Println("\n\n\n EOF users %q：\n\n\n", Public.LoginUser)
+				ws.Close()
+				goto out
+			case err == io.ErrUnexpectedEOF:
+				delete(Public.LoginUser, ws)
+				fmt.Println("\n\n\n ErrUnexpectedEOF users %q：\n\n\n", Public.LoginUser)
 				ws.Close()
 				goto out
 			default:
-				log.Fatal(err)
+				log.Fatal("ws read fatal", err)
 			}
 		}
 
@@ -156,7 +161,7 @@ func sender() {
 				goto Exit
 			default:
 				goto Exit
-				log.Fatal("Fatal Err: %s \r\n", err)
+				log.Fatal("Sender Fatal : %s \r\n", err)
 			}
 		}
 	}

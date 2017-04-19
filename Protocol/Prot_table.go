@@ -13,6 +13,8 @@ const (
 	Fc_fileTrans = 0x10
 	Fc_fileTranD = 0x11
 	Fc_dataTrans = 0x20
+
+	Fc_HB = 0xF0
 )
 
 // fc file paras

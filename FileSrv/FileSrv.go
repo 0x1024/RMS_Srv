@@ -19,17 +19,24 @@ var file_len int64 = 1024
 var file_block_counter uint = 0
 var TimeEslaped time.Time
 
-func FileTransfer(pt ptb.PackTag, rec []byte) {
+//
+func FileReciever(pt ptb.PackTag, rec []byte) {
 	var err error
 	switch pt.Ppara & 0xF {
 	case ptb.Fcp_fileName:
 		TimeEslaped = time.Now()
 		fo, err = os.Create(getCurrentDirectory() + "/rec/" + string(rec))
 		if err != nil {
-			logrus.Panic(err)
+			err = os.Mkdir(getCurrentDirectory()+"/rec/", os.ModeDir)
+			if err != nil {
+				logrus.Panic(err)
+			}
+			fo, err = os.Create(getCurrentDirectory() + "/rec/" + string(rec))
+			if err != nil {
+				logrus.Panic(err)
+			}
 		}
 		file_block_counter = 0
-	//fo, err = os.Create( "e://"  + string(rec))
 
 	case ptb.Fcp_fileSize:
 		bb := bytes.NewBuffer(rec)
@@ -61,6 +68,7 @@ func FileTransfer(pt ptb.PackTag, rec []byte) {
 		}
 		//logrus.Info("%d \t/ %d \r", file_block_counter, file_len/1024 )
 		//		fmt.Printf("%d \t/ %d \r", file_block_counter, file_len/1024)
+		//fmt.Println("fb: ",file_block_counter)
 		file_block_counter++
 		jn = jn
 		err = err

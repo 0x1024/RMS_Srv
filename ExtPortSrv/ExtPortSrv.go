@@ -12,6 +12,7 @@ import (
 func ExternService() {
 	fmt.Println("\n\n\n[INFO]start server....", time.Now().Format(time.UnixDate))
 	TcpServer()
+
 }
 
 //Client Device Server,provide robot connect service

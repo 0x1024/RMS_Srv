@@ -20,7 +20,7 @@ func TcpFrameProcessor(tcpcon net.Conn) {
 	var rec []byte
 	var pts_last uint16 = 0xffff
 	var dat = make([]byte, 16384)
-
+	var data []byte
 	fmt.Println("Client connect", tcpcon.RemoteAddr())
 
 	defer tcpcon.Close()
@@ -38,10 +38,11 @@ newdata:
 		if n == 0 {
 			time.Sleep(time.Microsecond)
 		}
-		data := dat[:n]
-		//fmt.Println("rec ",data)
-		for n > 1 {
-			for i, chk := range data[:n] {
+
+		data = append(data, dat[:n]...)
+		n = len(data)
+		for n > 0 {
+			for i, chk := range data {
 				if chk == 0x55 && data[i+1] == 0xAA {
 					data = data[i:]
 					n = n - i
@@ -58,6 +59,8 @@ newdata:
 				data = data[tmp:]
 				n = n - tmp
 
+			} else {
+				continue newdata
 			}
 
 			if pt.Pserial == pts_last {

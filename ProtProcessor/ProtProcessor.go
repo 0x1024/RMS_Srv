@@ -9,9 +9,11 @@ func Process(pt ptb.PackTag, rec []byte) {
 
 	switch pt.Pcmd {
 	case ptb.Fc_fileTrans:
-		FileSrv.FileTransfer(pt, rec)
+		FileSrv.FileReciever(pt, rec)
 	case ptb.Fc_fileTranD:
-		FileSrv.FileTransfer(pt, rec)
+		FileSrv.FileReciever(pt, rec)
+	case ptb.Fc_HB:
+
 	default:
 
 	}
