@@ -1,77 +1,89 @@
 package FileSrv
 
 import (
+	"PackFrame"
 	ptb "RMS_Srv/Protocol"
+	"RMS_Srv/Public"
 	"fmt"
 	"io"
 	"net"
 	"os"
+	"time"
 )
 
-func Client() {
-	//
-	//open file
-	//fmt.Println("send ur file to the destination", "input ur filename:")
-	//reader := bufio.NewReader(os.Stdin)
-	//input, _, _ := reader.ReadLine()
-	//fmt.Println(string(input))
-
+func FileOpener() {
+	var c Public.TcpTrucker
 	input := "e:\\2.rom"
 	fi, err := os.Open(string(input))
 	if err != nil {
 		panic(err)
 	}
+	c.Cmd = ptb.TSC_SendFile
+	c.Dat = fi
+	Public.TcpSender_Ch <- c
+}
+
+func Sendfile(conn net.Conn, c Public.TcpTrucker) {
+	var err error
+	var fi *os.File
+	fi = c.Dat.(*os.File)
 	defer fi.Close()
 	fiinfo, err := fi.Stat()
 	fmt.Println("the size of file is ", fiinfo.Size(), "bytes") //fiinfo.Size() return int64 type
 
-	//to online
-	conn, err := net.Dial("tcp", "127.0.0.1:8888")
-	if err != nil {
-		fmt.Println("connect server fail！", err.Error())
-		return
-	}
-	defer conn.Close()
+	nn := time.Now()
+	fmt.Println("now", nn.Format(time.RFC3339Nano))
 
 	//send file name
-	ready, err := ptb.Dopack([]byte(fiinfo.Name()),
+	ready, err := PackFrame.Dopack([]byte(fiinfo.Name()),
 		ptb.Fc_fileTrans, ptb.Fcp_fileName)
+
 	fmt.Printf("%s", ready)
 	_, err = conn.Write(ready)
 	if err != nil {
 		fmt.Println("conn.Write", err.Error())
 	}
-
+	time.Sleep(time.Microsecond * 5)
 	//send file size
-	ready, err = ptb.Dopack(ptb.TypeToByte(fiinfo.Size()),
+	ready, err = PackFrame.Dopack(PackFrame.TypeToByte(fiinfo.Size()),
 		ptb.Fc_fileTrans, ptb.Fcp_fileSize)
+
 	_, err = conn.Write(ready)
+	time.Sleep(time.Microsecond * 5)
+	//_, err = conn.Write([]byte(string(fiinfo.Size())))
 	if err != nil {
 		fmt.Println("conn.Write", err.Error())
 	}
+	time.Sleep(time.Microsecond * 5)
 
-	//send file body
 	var ctr uint32 = 0
 	for {
-		buff := make([]byte, 1024)
+		//fmt.Println("No ", ctr, "of total ", fiinfo.Size()/1024)
+		buff := make([]byte, 1024*8)
 		n, err := fi.Read(buff)
 		if err != nil && err != io.EOF {
 			panic(err)
 		}
 
 		if n == 0 {
-			ready, err = ptb.Dopack(buff[:n], ptb.Fc_dataTrans, ptb.Fcp_fileEOF)
+			ready, err = PackFrame.Dopack(buff[:n], ptb.Fc_fileTrans, ptb.Fcp_fileEOF)
 			_, err = conn.Write(ready)
-			//conn.Write([]byte("filerecvend"))
-			fmt.Println("filerecvend")
+
+			fmt.Println("time cost ", time.Now().Sub(nn))
+
+			fmt.Println("\nfile send finished")
 			break
 		}
 
-		ready, err = ptb.Dopack(buff[:n], ptb.Fc_fileTrans, ptb.Fcp_filedata|(ctr<<4))
+		ready, err = PackFrame.Dopack(buff[:n], ptb.Fc_fileTrans, ptb.Fcp_filedata|(ctr<<4))
 		_, err = conn.Write(ready)
+		//		_, err = conn.Write(buff)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
+		fmt.Println("file send process", ctr)
 		ctr++
+		time.Sleep(1)
 	}
+
 }

@@ -15,7 +15,7 @@ func main() {
 
 	go WEB_IO.Http_init()
 
-	go ExtPortSrv.ExternService()
+	go ExtPortSrv.TcpServerStarter()
 
 	<-RMS_EXIT
 }

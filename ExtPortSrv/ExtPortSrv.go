@@ -9,14 +9,9 @@ import (
 	"time"
 )
 
-func ExternService() {
-	fmt.Println("\n\n\n[INFO]start server....", time.Now().Format(time.UnixDate))
-	TcpServer()
-
-}
-
 //Client Device Server,provide robot connect service
-func TcpServer() {
+func TcpServerStarter() {
+	fmt.Println("\n\n\n[INFO]start server....", time.Now().Format(time.UnixDate))
 
 	//pprof service
 	go func() {
@@ -28,6 +23,7 @@ func TcpServer() {
 		fmt.Println("error listening:", err.Error())
 		os.Exit(1)
 	}
+
 	defer listener.Close()
 	fmt.Printf("Client Device Server running ...\n")
 
@@ -49,4 +45,24 @@ func TcpServer() {
 		conn := <-conn_chan
 		go TcpFrameProcessor(conn)
 	}
+}
+
+//Client node ,provide robot connect service
+func NodeStarter() {
+	var conn net.Conn
+	var err error
+	//to online
+	for {
+		conn, err = net.Dial("tcp", "127.0.0.1:8888")
+		if err != nil {
+			fmt.Println("connect server fail！", err.Error())
+			time.Sleep(10e9)
+			continue
+		}
+		break
+	}
+	defer conn.Close()
+
+	TcpFrameProcessor(conn)
+
 }

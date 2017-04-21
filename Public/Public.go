@@ -8,6 +8,15 @@ import (
 var Signal = make(chan *Senders, 2)
 var DB2Ret = make(chan *Senders, 2)
 
+var TcpSender_Ch chan TcpTrucker = make(chan TcpTrucker, 16)
+
+type TcpTrucker struct {
+	Cmd int
+	Dat interface{}
+	Ext []interface{}
+}
+
+//server ws
 type Senders struct {
 	Ws  *websocket.Conn
 	Dat string

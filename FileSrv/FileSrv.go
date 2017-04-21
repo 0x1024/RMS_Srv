@@ -68,7 +68,7 @@ func FileReciever(pt ptb.PackTag, rec []byte) {
 		}
 		//logrus.Info("%d \t/ %d \r", file_block_counter, file_len/1024 )
 		//		fmt.Printf("%d \t/ %d \r", file_block_counter, file_len/1024)
-		//fmt.Println("fb: ",file_block_counter)
+		fmt.Println("file rec : ", file_block_counter)
 		file_block_counter++
 		jn = jn
 		err = err

@@ -24,3 +24,8 @@ const (
 	Fcp_fileSize = 0x03
 	Fcp_filedata = 0x04
 )
+
+//tcp sender cmd
+const (
+	TSC_SendFile = 0x10
+)
