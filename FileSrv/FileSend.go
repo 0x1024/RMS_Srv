@@ -1,7 +1,6 @@
 package FileSrv
 
 import (
-	"PackFrame"
 	ptb "RMS_Srv/Protocol"
 	"RMS_Srv/Public"
 	"fmt"
@@ -35,7 +34,7 @@ func Sendfile(conn net.Conn, c Public.TcpTrucker) {
 	fmt.Println("now", nn.Format(time.RFC3339Nano))
 
 	//send file name
-	ready, err := PackFrame.Dopack([]byte(fiinfo.Name()),
+	ready, err := ptb.Dopack([]byte(fiinfo.Name()),
 		ptb.Fc_fileTrans, ptb.Fcp_fileName)
 
 	fmt.Printf("%s", ready)
@@ -45,7 +44,7 @@ func Sendfile(conn net.Conn, c Public.TcpTrucker) {
 	}
 	time.Sleep(time.Microsecond * 5)
 	//send file size
-	ready, err = PackFrame.Dopack(PackFrame.TypeToByte(fiinfo.Size()),
+	ready, err = ptb.Dopack(ptb.TypeToByte(fiinfo.Size()),
 		ptb.Fc_fileTrans, ptb.Fcp_fileSize)
 
 	_, err = conn.Write(ready)
@@ -66,7 +65,7 @@ func Sendfile(conn net.Conn, c Public.TcpTrucker) {
 		}
 
 		if n == 0 {
-			ready, err = PackFrame.Dopack(buff[:n], ptb.Fc_fileTrans, ptb.Fcp_fileEOF)
+			ready, err = ptb.Dopack(buff[:n], ptb.Fc_fileTrans, ptb.Fcp_fileEOF)
 			_, err = conn.Write(ready)
 
 			fmt.Println("time cost ", time.Now().Sub(nn))
@@ -75,7 +74,7 @@ func Sendfile(conn net.Conn, c Public.TcpTrucker) {
 			break
 		}
 
-		ready, err = PackFrame.Dopack(buff[:n], ptb.Fc_fileTrans, ptb.Fcp_filedata|(ctr<<4))
+		ready, err = ptb.Dopack(buff[:n], ptb.Fc_fileTrans, ptb.Fcp_filedata|(ctr<<4))
 		_, err = conn.Write(ready)
 		//		_, err = conn.Write(buff)
 		if err != nil {
