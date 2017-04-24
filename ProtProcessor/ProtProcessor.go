@@ -1,7 +1,6 @@
 package ProtProcessor
 
 import (
-	"PackFrame"
 	"RMS_Srv/FileSrv"
 	ptb "RMS_Srv/Protocol"
 	"RMS_Srv/Public"
@@ -39,7 +38,7 @@ func SenderProcess(tcpcon net.Conn) {
 			//send file name
 			//var ss []byte = make([]byte, 8)
 			//binary.BigEndian.PutUint64(ss, uint64(c.Dat.(int)))
-			ready, err := PackFrame.Dopack(c.Dat.([]byte),
+			ready, err := ptb.Dopack(c.Dat.([]byte),
 				ptb.Fc_HB, 0)
 
 			fmt.Printf("%s", ready)

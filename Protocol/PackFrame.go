@@ -2,6 +2,7 @@ package Protocol
 
 import (
 	"encoding/binary"
+	"fmt"
 	"math"
 	"unsafe"
 )
@@ -23,18 +24,18 @@ func serialGen() uint16 {
 func Dopack(loads []byte, cmd uint16, para uint32) ([]byte, error) {
 	var err error = nil
 	var pk []byte
-	var ptag PackTag
+	var p PackTag
 
-	ptag.Phead = 0xAA55
-	ptag.Plen = uint16(len(loads))
-	ptag.Pcmd = cmd
-	ptag.Ppara = para
-	ptag.Pserial = serialGen()
+	p.Phead = 0xAA55
+	p.Plen = uint16(len(loads))
+	p.Pcmd = cmd
+	p.Ppara = para
+	p.Pserial = serialGen()
 
-	l := unsafe.Sizeof(ptag)
-	pb := (*[1024]byte)(unsafe.Pointer(&ptag))
-	len := len(loads) + int(l)
-	pk = make([]byte, len)
+	l := unsafe.Sizeof(p)
+	pb := (*[1024]byte)(unsafe.Pointer(&p))
+	lenss := len(loads) + int(l)
+	pk = make([]byte, lenss)
 	copy(pk, (*pb)[:l])
 	copy(pk[l:], loads)
 
@@ -47,13 +48,13 @@ func Dopack(loads []byte, cmd uint16, para uint32) ([]byte, error) {
 	return pk, err
 }
 
-func Depack(d []byte) (PackTag, []byte) {
-	var ptag PackTag
-	l := unsafe.Sizeof(ptag)
-	pb := (*[1024]byte)(unsafe.Pointer(&ptag))
+func Depack(d []byte) (PackTag, []byte, error) {
+	var pt PackTag
+	l := unsafe.Sizeof(pt)
+	pb := (*[1024]byte)(unsafe.Pointer(&pt))
 	copy((*pb)[:l], d[:l])
 	//	fmt.Println(pt)
-	return ptag, d[l:]
+	return pt, d[l:], nil
 }
 
 //
@@ -137,7 +138,6 @@ func TypeToByte(v interface{}) []byte {
 
 func ByteToType(src []byte, v interface{}) {
 	switch va := v.(type) {
-
 	case []byte:
 		v = src
 	case string:
@@ -157,8 +157,7 @@ func ByteToType(src []byte, v interface{}) {
 	case float64:
 		v = ByteToFloat64(src)
 	default:
-		v = nil
-		va = va
+		fmt.Printf("%t", va)
 		break
 	}
 	return

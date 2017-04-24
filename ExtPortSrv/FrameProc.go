@@ -57,7 +57,7 @@ newdata:
 
 			//check head stx and lens
 			if data[0] == 0x55 && data[1] == 0xAA && (n >= 12+(int(data[2])+int(data[3])*256)) {
-				pt, rec = ptb.Depack(data[:12+int(data[2])+int(data[3])*256])
+				pt, rec, _ = ptb.Depack(data[:12+int(data[2])+int(data[3])*256])
 
 				//regroup remained data,consider it's next package
 				tmp := 12 + int(data[2]) + int(data[3])*256
