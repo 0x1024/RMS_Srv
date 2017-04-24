@@ -5,7 +5,6 @@ import (
 	"RMS_Srv/FileSrv"
 	ptb "RMS_Srv/Protocol"
 	"RMS_Srv/Public"
-	"encoding/binary"
 	"fmt"
 	"net"
 )
@@ -19,7 +18,7 @@ func RecProcess(pt ptb.PackTag, rec []byte) {
 	case ptb.Fc_fileTranD:
 		FileSrv.FileReciever(pt, rec)
 	case ptb.Fc_HB:
-		fmt.Printf("fc HB : %s", rec)
+		fmt.Printf("fc HB : %s\n", rec)
 	default:
 
 	}
@@ -38,9 +37,9 @@ func SenderProcess(tcpcon net.Conn) {
 			FileSrv.Sendfile(tcpcon, c)
 		case ptb.Fc_HB:
 			//send file name
-			var ss []byte = make([]byte, 8)
-			binary.BigEndian.PutUint64(ss, uint64(c.Dat.(int)))
-			ready, err := PackFrame.Dopack(ss,
+			//var ss []byte = make([]byte, 8)
+			//binary.BigEndian.PutUint64(ss, uint64(c.Dat.(int)))
+			ready, err := PackFrame.Dopack(c.Dat.([]byte),
 				ptb.Fc_HB, 0)
 
 			fmt.Printf("%s", ready)
