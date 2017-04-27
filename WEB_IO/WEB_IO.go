@@ -3,11 +3,11 @@ package WEB_IO
 import (
 	"RMS_Srv/DataBase_SAL"
 	"RMS_Srv/Public"
-
 	"encoding/json"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/net/websocket"
+	"iMQ"
 	"io"
 	rand2 "math/rand"
 	"net/http"
@@ -36,6 +36,7 @@ func Http_init() {
 	go http.ListenAndServeTLS(":9004", "sign.pem", "ssl.key", nil)
 
 	<-WEBIO_EXIT
+	fmt.Println("WEBIO_EXIT")
 }
 
 //generate privilege passport license
@@ -66,13 +67,15 @@ func HB(ws *websocket.Conn) {
 	send.Data = ""
 	rec, _ := json.Marshal(send)
 	data_tmp := string(rec)
+	Senders.Ws = ws
+	Senders.Dat = data_tmp
 
 	for true {
 
 		if Public.LoginUser[ws] != nil {
+
 			Public.DB2Ret <- Senders
-			Senders.Ws = ws
-			Senders.Dat = data_tmp
+
 			Public.LoginUser[ws].HBLife = Public.LoginUser[ws].HBLife + 1
 			fmt.Println("HBL", Public.LoginUser[ws].HBLife)
 			if Public.LoginUser[ws].HBLife > 10 {
@@ -81,6 +84,35 @@ func HB(ws *websocket.Conn) {
 		}
 		time.Sleep(5e9)
 	}
+}
+func webio_rec(msg []byte, c interface{}) {
+	fmt.Printf("rec node data %s", msg)
+	cc := c.(*websocket.Conn)
+	Senders := new(Public.Senders)
+	var send cmd
+	send.Cmd = "Online"
+	send.Data = msg
+	rec, _ := json.Marshal(send)
+	data_tmp := string(rec)
+	Senders.Ws = cc
+	Senders.Dat = data_tmp
+
+	Public.DB2Ret <- Senders
+}
+
+type Clienter struct {
+	c *iMQ.Client
+}
+
+func (c1 *Clienter) Affair_Reg(ws *websocket.Conn) {
+	c1.c = &iMQ.Client{Id: 1, Name: "webio", Ccb: webio_rec, Para: ws}
+	iMQ.Imqsrv.Subscribe(c1.c, "NodeStat")
+
+}
+
+func (c1 *Clienter) Affair_Clr() {
+	iMQ.Imqsrv.Unsubscribe(c1.c, "NodeStat")
+
 }
 
 func echoHandler(ws *websocket.Conn) {
@@ -103,6 +135,9 @@ func echoHandler(ws *websocket.Conn) {
 	defer ws.Close()
 	go sender()
 	go HB(ws)
+	c := new(Clienter)
+	go c.Affair_Reg(ws)
+	defer c.Affair_Clr()
 
 	fmt.Println("\n\n\n client addr :", ws.Request().RemoteAddr)
 

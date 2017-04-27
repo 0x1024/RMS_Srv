@@ -17,6 +17,8 @@ type TcpTrucker struct {
 }
 
 //server ws
+//	Ws  *websocket.Conn
+//      Dat string
 type Senders struct {
 	Ws  *websocket.Conn
 	Dat string

@@ -4,12 +4,14 @@ import (
 	"RMS_Srv/DataBase_SAL"
 	"RMS_Srv/ExtPortSrv"
 	"RMS_Srv/WEB_IO"
+	"iMQ"
 )
 
 var RMS_EXIT chan int
 
 func main() {
 	WEB_IO.Init()
+	iMQ.Init()
 
 	go DataBase_SAL.DB_Init()
 

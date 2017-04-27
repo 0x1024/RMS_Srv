@@ -77,12 +77,12 @@ func DB_Init() {
 	//=====================================================================
 	//open db
 	//engine, err = xorm.NewPostgreSQL("postgres://rms:123@10.1.11.151:5432/RMSDB?sslmode=disable")
-	engine, err = xorm.NewPostgreSQL("postgres://postgres:asdf123@118.178.138.192:5432/RMSDB?sslmode=disable")
+	engine, err = xorm.NewPostgreSQL("postgres://postgres:123@118.178.138.192:5432/RMSDB?sslmode=disable")
 	if err != nil {
 		log.Panic(err)
 	}
 
-	AUTH_SAL.AuthEng, err = xorm.NewPostgreSQL("postgres://rms:123@10.1.11.151:5432/AuthDB?sslmode=disable")
+	AUTH_SAL.AuthEng, err = xorm.NewPostgreSQL("postgres://postgres:123@118.178.138.192:5432/AuthDB?sslmode=disable")
 	if err != nil {
 		log.Panic(err)
 	}

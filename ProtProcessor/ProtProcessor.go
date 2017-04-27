@@ -5,6 +5,7 @@ import (
 	ptb "RMS_Srv/Protocol"
 	"RMS_Srv/Public"
 	"fmt"
+	"iMQ"
 	"net"
 )
 
@@ -17,7 +18,8 @@ func RecProcess(pt ptb.PackTag, rec []byte) {
 	case ptb.Fc_fileTranD:
 		FileSrv.FileReciever(pt, rec)
 	case ptb.Fc_HB:
-		fmt.Printf("fc HB : %s\n", rec)
+		iMQ.Imqsrv.PublishMessage("NodeStat", rec)
+	//Public.DB2Ret <- s
 	default:
 
 	}
@@ -46,7 +48,7 @@ func SenderProcess(tcpcon net.Conn) {
 			if err != nil {
 			}
 		default:
-
+			fmt.Println("send cmd not found,it's ", c.Cmd)
 		}
 
 	}
