@@ -30,10 +30,10 @@ func Http_init() {
 	http.Handle("/", websocket.Handler(echoHandler))
 
 	//no tls
-	go http.ListenAndServe(":9003", nil)
+	go http.ListenAndServe("118.178.138.192:8855", nil)
 
 	//tls addon test
-	go http.ListenAndServeTLS(":9004", "sign.pem", "ssl.key", nil)
+	//go http.ListenAndServeTLS(":9004", "sign.pem", "ssl.key", nil)
 
 	<-WEBIO_EXIT
 	fmt.Println("WEBIO_EXIT")

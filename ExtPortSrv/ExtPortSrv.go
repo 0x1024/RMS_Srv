@@ -18,7 +18,7 @@ func TcpServerStarter() {
 		logrus.Println(http.ListenAndServe("localhost:6060", nil))
 	}()
 
-	listener, err := net.Listen("tcp", "127.0.0.1:8888")
+	listener, err := net.Listen("tcp", ":8866")
 	if err != nil {
 		fmt.Println("error listening:", err.Error())
 		os.Exit(1)
@@ -49,11 +49,14 @@ func TcpServerStarter() {
 
 //Client node ,provide robot connect service
 func NodeStarter() {
-	var conn net.Conn
+	var conn, conn1 net.Conn
 	var err error
 	//to online
 	for {
-		conn, err = net.Dial("tcp", "127.0.0.1:8888")
+		//local debug
+		conn1, err = net.Dial("tcp", ":8866")
+		//server apply
+		conn, err = net.Dial("tcp", "118.178.138.192:8866")
 		if err != nil {
 			fmt.Println("connect server fail！", err.Error())
 			time.Sleep(10e9)
@@ -62,6 +65,9 @@ func NodeStarter() {
 		break
 	}
 	defer conn.Close()
+	defer conn1.Close()
+
+	go TcpFrameProcessor(conn1)
 
 	TcpFrameProcessor(conn)
 
