@@ -14,6 +14,20 @@ import (
 	"time"
 )
 
+func LoginWSHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		s := websocket.Server{websocket.Config{}, nil, loginWebSocketServer}
+		s.ServeHTTP(w, r)
+		websocket.Handler
+	}
+}
+
+func loginWebSocketServer(ws *websocket.Conn) {
+	defer ws.Close()
+
+	mux.HandleFunc("/", LoginWSHandler())
+}
+
 type cmd struct {
 	Cmd  string      `json:"cmd"`
 	Data interface{} `json:"data"`

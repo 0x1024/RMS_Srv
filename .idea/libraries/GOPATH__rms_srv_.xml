@@ -8,7 +8,6 @@
       <root url="file://$PROJECT_DIR$/../aaa" />
       <root url="file://$PROJECT_DIR$/../srv-test" />
       <root url="file://$PROJECT_DIR$/../file_trnass" />
-      <root url="file://$PROJECT_DIR$/../RMS_Server" />
       <root url="file://$PROJECT_DIR$/../db" />
       <root url="file://$PROJECT_DIR$/../test-snake" />
       <root url="file://$PROJECT_DIR$/../websocketss" />
@@ -16,6 +15,7 @@
       <root url="file://$PROJECT_DIR$/../file_trans" />
       <root url="file://$PROJECT_DIR$/../test3" />
       <root url="file://$PROJECT_DIR$/../tt4" />
+      <root url="file://$PROJECT_DIR$/../RMS_Srv" />
       <root url="file://$PROJECT_DIR$/../github.com" />
       <root url="file://$PROJECT_DIR$/../test-imq" />
       <root url="file://$PROJECT_DIR$/../google.golang.org" />
@@ -42,7 +42,6 @@
       <root url="file://$PROJECT_DIR$/../aaa" />
       <root url="file://$PROJECT_DIR$/../srv-test" />
       <root url="file://$PROJECT_DIR$/../file_trnass" />
-      <root url="file://$PROJECT_DIR$/../RMS_Server" />
       <root url="file://$PROJECT_DIR$/../db" />
       <root url="file://$PROJECT_DIR$/../test-snake" />
       <root url="file://$PROJECT_DIR$/../websocketss" />
@@ -50,6 +49,7 @@
       <root url="file://$PROJECT_DIR$/../file_trans" />
       <root url="file://$PROJECT_DIR$/../test3" />
       <root url="file://$PROJECT_DIR$/../tt4" />
+      <root url="file://$PROJECT_DIR$/../RMS_Srv" />
       <root url="file://$PROJECT_DIR$/../github.com" />
       <root url="file://$PROJECT_DIR$/../test-imq" />
       <root url="file://$PROJECT_DIR$/../google.golang.org" />
