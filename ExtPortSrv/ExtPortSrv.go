@@ -1,6 +1,8 @@
 package ExtPortSrv
 
 import (
+	"RMS_Srv/ProtProcessor"
+	"RMS_Srv/Public"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"net"
@@ -12,7 +14,7 @@ import (
 //Client Device Server,provide robot connect service
 func TcpServerStarter() {
 	fmt.Println("\n\n\n[INFO]start server....", time.Now().Format(time.UnixDate))
-
+	go ProtProcessor.DevOnlineManage()
 	//pprof service
 	go func() {
 		logrus.Println(http.ListenAndServe("localhost:6060", nil))
@@ -20,7 +22,7 @@ func TcpServerStarter() {
 
 	listener, err := net.Listen("tcp", ":8866")
 	if err != nil {
-		fmt.Println("error listening:", err.Error())
+		fmt.Println("error tcp listening:", err.Error())
 		os.Exit(1)
 	}
 
@@ -55,20 +57,28 @@ func NodeStarter() {
 	for {
 		//local debug
 		conn1, err = net.Dial("tcp", ":8866")
+		if err != nil {
+
+		} else {
+			defer conn1.Close()
+			go TcpFrameProcessor(conn1)
+		}
 		//server apply
-		conn, err = net.Dial("tcp", "118.178.138.192:8866")
+		//conn, err = net.Dial("tcp", "118.178.138.192:8866")
+		conn, err = net.Dial("tcp", "127.0.0.1:8866")
 		if err != nil {
 			fmt.Println("connect server fail！", err.Error())
 			time.Sleep(10e9)
 			continue
 		}
+		defer conn.Close()
+		Public.LocalNode.NodeIPP = conn
+
+		TcpFrameProcessor(conn)
 		break
 	}
-	defer conn.Close()
-	defer conn1.Close()
 
-	go TcpFrameProcessor(conn1)
-
-	TcpFrameProcessor(conn)
+	EXIT_ch := make(chan bool)
+	<-EXIT_ch
 
 }

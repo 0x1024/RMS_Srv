@@ -3,6 +3,7 @@ package main
 import (
 	"RMS_Srv/DataBase_SAL"
 	"RMS_Srv/ExtPortSrv"
+	"RMS_Srv/Public"
 	"RMS_Srv/WEB_IO"
 	"iMQ"
 )
@@ -10,7 +11,7 @@ import (
 var RMS_EXIT chan int
 
 func main() {
-	WEB_IO.Init()
+	Public.Init()
 	iMQ.Init()
 
 	go DataBase_SAL.DB_Init()

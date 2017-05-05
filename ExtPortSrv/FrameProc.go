@@ -3,6 +3,7 @@ package ExtPortSrv
 import (
 	"RMS_Srv/ProtProcessor"
 	ptb "RMS_Srv/Protocol"
+	"RMS_Srv/Public"
 	"fmt"
 	"io"
 	"net"
@@ -21,22 +22,29 @@ func TcpFrameProcessor(tcpcon net.Conn) {
 	var pts_last uint16 = 0xffff
 	var dat = make([]byte, 16384)
 	var data []byte
-	fmt.Println("Client connect", tcpcon.RemoteAddr())
+
+	fmt.Println("TCP Client connect", tcpcon.RemoteAddr())
 	defer tcpcon.Close()
 
-	go ProtProcessor.SenderProcess(tcpcon)
+	//reg new come node ip
+	Public.OnlineNodes[tcpcon] = new(Public.NodeStats)
+	Public.OnlineNodes[tcpcon].NodeIPP = tcpcon
+	defer delete(Public.OnlineNodes, tcpcon)
+
+	go ProtProcessor.SenderProcess()
 
 	//tcpcon.SetReadDeadline(time.Now().Add(time.Second * 5))
 
 	//test file download on connect
 	//FileSrv.FileOpener()
 
+	// reciever
 newdata:
 	for {
 		n, err := tcpcon.Read(dat)
 		if err == io.EOF || err != nil {
 			//if errHandling(tcpcon, err) > 0 {
-			return
+			//return
 			//}
 		}
 
@@ -83,7 +91,7 @@ newdata:
 			}
 			pts_last = pt.Pserial
 
-			ProtProcessor.RecProcess(pt, rec)
+			ProtProcessor.RecProcess(pt, rec, tcpcon)
 		}
 	}
 }

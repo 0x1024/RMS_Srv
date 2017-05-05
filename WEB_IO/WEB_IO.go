@@ -14,19 +14,6 @@ import (
 	"time"
 )
 
-func LoginWSHandler() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		s := websocket.Server{websocket.Config{}, nil, loginWebSocketServer}
-		s.ServeHTTP(w, r)
-		websocket.Handler
-	}
-}
-
-func loginWebSocketServer(ws *websocket.Conn) {
-	defer ws.Close()
-
-	mux.HandleFunc("/", LoginWSHandler())
-}
 
 type cmd struct {
 	Cmd  string      `json:"cmd"`
@@ -35,16 +22,22 @@ type cmd struct {
 
 var WEBIO_EXIT chan int
 
-func Init() {
-	Public.LoginUser = make(map[*websocket.Conn]*Public.LoginType)
-}
-
 func Http_init() {
 
 	http.Handle("/", websocket.Handler(echoHandler))
 
 	//no tls
-	go http.ListenAndServe("118.178.138.192:8855", nil)
+	go func() {
+		//err:=http.ListenAndServe("118.178.138.192:8858", nil)
+		err := http.ListenAndServe(":8858", nil)
+		if err != nil {
+			fmt.Println("\nws listen err: ", err)
+		} else {
+			fmt.Println("ws listen online")
+
+		}
+
+	}()
 
 	//tls addon test
 	//go http.ListenAndServeTLS(":9004", "sign.pem", "ssl.key", nil)
@@ -78,7 +71,7 @@ func HB(ws *websocket.Conn) {
 	Senders := new(Public.Senders)
 	var send cmd
 	send.Cmd = "HB"
-	send.Data = ""
+	send.Data = "send HB"
 	rec, _ := json.Marshal(send)
 	data_tmp := string(rec)
 	Senders.Ws = ws
@@ -105,7 +98,7 @@ func webio_rec(msg []byte, c interface{}) {
 	Senders := new(Public.Senders)
 	var send cmd
 	send.Cmd = "Online"
-	send.Data = msg
+	send.Data = string(msg)
 	rec, _ := json.Marshal(send)
 	data_tmp := string(rec)
 	Senders.Ws = cc
@@ -200,7 +193,7 @@ func sender() {
 
 	for {
 		rec := <-Public.DB2Ret
-		fmt.Printf("sender to send :%\r\n", rec)
+		fmt.Printf("sender to send :%s \r\n", rec.Dat)
 		_, err := rec.Ws.Write([]byte(rec.Dat))
 		if err != nil {
 			fmt.Printf("sender err %s\n", err)

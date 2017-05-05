@@ -2,6 +2,7 @@ package DataBase_SAL
 
 import (
 	"RMS_Srv/AUTH_SAL"
+	"RMS_Srv/FileSrv"
 	"RMS_Srv/Public"
 	"encoding/json"
 	"errors"
@@ -90,6 +91,7 @@ func ReqProcess(ws *websocket.Conn, dat string) {
 		switch dats["cmd"] {
 		case "req":
 			fmt.Printf("\npriv  %X  ", Public.LoginUser[ws].Priv)
+			delete(dats, "cmd")
 			if Public.LoginUser[ws].Priv&OP_Read != 0 {
 				sa1 := new(Pd_index)
 				re, _ := strconv.Atoi(dats["pid"])
@@ -110,6 +112,7 @@ func ReqProcess(ws *websocket.Conn, dat string) {
 				authAct_NoPermition(Senders, send)
 			}
 		case "all":
+			delete(dats, "cmd")
 			if Public.LoginUser[ws].Priv&OP_Read != 0 {
 				sa2 := new([]Pd_index)
 				err = engine.Find(sa2)
@@ -129,10 +132,10 @@ func ReqProcess(ws *websocket.Conn, dat string) {
 				authAct_NoPermition(Senders, send)
 			}
 		case "comitone":
+			delete(dats, "cmd")
 			if Public.LoginUser[ws].Priv&OP_Write != 0 {
 				var recs int64
 				//prepare data
-				delete(dats, "cmd")
 				result := &Pd_index{}
 				fmt.Printf("%q \r\n\n", dats) //debug
 				err = FillStruct(dats, result)
@@ -166,8 +169,8 @@ func ReqProcess(ws *websocket.Conn, dat string) {
 				authAct_NoPermition(Senders, send)
 			}
 		case "update":
-			if Public.LoginUser[ws].Priv&OP_Write != 0 {
 				delete(dats, "cmd")
+			if Public.LoginUser[ws].Priv&OP_Write != 0 {
 				result := &Pd_index{}
 				fmt.Printf("%q \r\n\n", dats) //debug
 
@@ -190,9 +193,10 @@ func ReqProcess(ws *websocket.Conn, dat string) {
 				authAct_NoPermition(Senders, send)
 			}
 		case "delete_id":
+			delete(dats, "cmd")
 			if Public.LoginUser[ws].Priv&OP_Delete != 0 {
 
-				delete(dats, "cmd")
+
 				result := &Pd_index{}
 				fmt.Printf("%q \r\n\n", dats) //debug
 
@@ -218,15 +222,36 @@ func ReqProcess(ws *websocket.Conn, dat string) {
 				authAct_NoPermition(Senders, send)
 			}
 		case "HB":
+			delete(dats, "cmd")
+
 			//if Public.LoginUser[ws].Priv&OP_Ping != 0 {
 			Public.LoginUser[ws].HBLife = 0
 
 		//}
+		case "updateFW":
+			delete(dats, "cmd")
+			if Public.LoginUser[ws].Priv&OP_Manage != 0 {
+
+				re, _ := strconv.Atoi(dats["pid"])
+				for _, v := range Public.OnlineNodes {
+					if v.PID == uint64(re) {
+						FileSrv.FileOpener(v.NodeIPP)
+
+					}
+				}
+
+			} else {
+				send.Cmd = dats["cmd"]
+				authAct_NoPermition(Senders, send)
+			}
+
+
 		default:
 			send.Cmd = "respond"
 			send.Data = nil
 
 			rec, _ := json.Marshal(send)
+			delete(dats, "cmd")
 
 			data_tmp := string(rec)
 			Senders.Dat = data_tmp

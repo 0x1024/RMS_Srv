@@ -10,15 +10,16 @@ import (
 	"time"
 )
 
-func FileOpener() {
+func FileOpener(tcpcon net.Conn) {
 	var c Public.TcpTrucker
-	input := "e:\\2.rom"
+	input := "e:\\a.txt"
 	fi, err := os.Open(string(input))
 	if err != nil {
 		panic(err)
 	}
 	c.Cmd = ptb.TSC_SendFile
 	c.Dat = fi
+	c.Ip = tcpcon
 	Public.TcpSender_Ch <- c
 }
 

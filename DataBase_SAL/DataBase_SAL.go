@@ -17,11 +17,13 @@ type Pd_index struct {
 	Passwd  string    "5,Passwd"
 	Created time.Time "6,Created"
 	Updated time.Time "7,Updated"
+	Mcuid   uint64  "1,Pid"
+
 }
 
 //user manage
 type Um_index struct {
-	Pid     uint64 "1,Pid"
+	Pid     uint64    "1,Pid"
 	Uid     uint64
 	Name    string    "2,Name"
 	Passwd  string    "3,Passwd"

@@ -1,6 +1,7 @@
 package FileSrv
 
 import (
+	"RMS_Node/Serial_Srv"
 	ptb "RMS_Srv/Protocol"
 	"bytes"
 	"encoding/binary"
@@ -52,6 +53,10 @@ func FileReciever(pt ptb.PackTag, rec []byte) {
 		if err == nil {
 			fmt.Println("\nerr:", err)
 		}
+
+		//download to mcu
+		Serial_Srv.Sendfile(path.Dir(fo.Name()))
+
 		fo.Close()
 		fmt.Println("\ntime cost(sec) :", float32(time.Now().Sub(TimeEslaped).Nanoseconds())/1e9)
 		return
