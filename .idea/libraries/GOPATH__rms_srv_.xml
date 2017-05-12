@@ -33,6 +33,7 @@
       <root url="file://$PROJECT_DIR$/../RMS_Node" />
       <root url="file://$PROJECT_DIR$/../overflow" />
       <root url="file://$PROJECT_DIR$/../iMQ" />
+      <root url="file://$PROJECT_DIR$/../FW_OCD" />
     </CLASSES>
     <SOURCES>
       <root url="file://$PROJECT_DIR$/../sser" />
@@ -67,6 +68,7 @@
       <root url="file://$PROJECT_DIR$/../RMS_Node" />
       <root url="file://$PROJECT_DIR$/../overflow" />
       <root url="file://$PROJECT_DIR$/../iMQ" />
+      <root url="file://$PROJECT_DIR$/../FW_OCD" />
     </SOURCES>
     <excluded>
       <root url="file://$PROJECT_DIR$" />

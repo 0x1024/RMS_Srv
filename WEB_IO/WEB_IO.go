@@ -14,7 +14,6 @@ import (
 	"time"
 )
 
-
 type cmd struct {
 	Cmd  string      `json:"cmd"`
 	Data interface{} `json:"data"`
@@ -76,7 +75,9 @@ func HB(ws *websocket.Conn) {
 	data_tmp := string(rec)
 	Senders.Ws = ws
 	Senders.Dat = data_tmp
-
+	defer func() {
+		Public.LoginUser[ws].HBLife = 0
+	}()
 	for true {
 
 		if Public.LoginUser[ws] != nil {
@@ -154,7 +155,9 @@ func echoHandler(ws *websocket.Conn) {
 		Public.LoginUser[ws].Name = "匿名"
 		Public.LoginUser[ws].Handle = ws
 		go GenPPL(ws)
-
+		defer func() {
+			delete(Public.LoginUser, ws)
+		}()
 	}
 
 	msg := make([]byte, 1024)
@@ -177,7 +180,7 @@ func echoHandler(ws *websocket.Conn) {
 				ws.Close()
 				goto out
 			default:
-				log.Fatal("ws read fatal", err)
+				log.Panic("ws read fatal", err)
 			}
 		}
 
@@ -203,7 +206,7 @@ func sender() {
 				goto Exit
 			default:
 				goto Exit
-				log.Fatal("Sender Fatal : %s \r\n", err)
+				log.Panic("Sender Fatal : %s \r\n", err)
 			}
 		}
 	}

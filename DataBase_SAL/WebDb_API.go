@@ -169,7 +169,7 @@ func ReqProcess(ws *websocket.Conn, dat string) {
 				authAct_NoPermition(Senders, send)
 			}
 		case "update":
-				delete(dats, "cmd")
+			delete(dats, "cmd")
 			if Public.LoginUser[ws].Priv&OP_Write != 0 {
 				result := &Pd_index{}
 				fmt.Printf("%q \r\n\n", dats) //debug
@@ -195,7 +195,6 @@ func ReqProcess(ws *websocket.Conn, dat string) {
 		case "delete_id":
 			delete(dats, "cmd")
 			if Public.LoginUser[ws].Priv&OP_Delete != 0 {
-
 
 				result := &Pd_index{}
 				fmt.Printf("%q \r\n\n", dats) //debug
@@ -244,7 +243,6 @@ func ReqProcess(ws *websocket.Conn, dat string) {
 				send.Cmd = dats["cmd"]
 				authAct_NoPermition(Senders, send)
 			}
-
 
 		default:
 			send.Cmd = "respond"

@@ -51,21 +51,21 @@ func TcpServerStarter() {
 
 //Client node ,provide robot connect service
 func NodeStarter() {
-	var conn, conn1 net.Conn
+	var conn net.Conn
 	var err error
 	//to online
 	for {
 		//local debug
-		conn1, err = net.Dial("tcp", ":8866")
-		if err != nil {
-
-		} else {
-			defer conn1.Close()
-			go TcpFrameProcessor(conn1)
-		}
+		//conn1, err = net.Dial("tcp", "127.0.0.1:8866")
+		//if err != nil {
+		//
+		//} else {
+		//	defer conn1.Close()
+		//	go TcpFrameProcessor(conn1)
+		//}
 		//server apply
-		//conn, err = net.Dial("tcp", "118.178.138.192:8866")
-		conn, err = net.Dial("tcp", "127.0.0.1:8866")
+		conn, err = net.Dial("tcp", "118.178.138.192:8866")
+		//conn, err = net.Dial("tcp", "127.0.0.1:8866")
 		if err != nil {
 			fmt.Println("connect server fail！", err.Error())
 			time.Sleep(10e9)
